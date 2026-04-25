@@ -428,7 +428,7 @@ async function loadAllData() {
 
     // Refresh prediction if we're already playing
     if (state.phase === 'playing') refreshPrediction();
-    if (state.phase === 'playing' || state.phase === 'playing') updateStatusBar();
+    if (state.phase === 'playing') updateStatusBar();
 
     // Refresh community tab if visible
     if ($('tab-community').classList.contains('active')) renderCommunity();
