@@ -57,21 +57,21 @@
 
         <div id="play-grid" class="grid-4x4"></div>
 
-        <div id="tap-result-panel" class="action-panel hidden">
-          <p id="tap-result-label" class="action-label">Did you find Stanley there?</p>
-          <div class="result-buttons">
-            <button id="btn-hit" class="btn-hit">🦔 Found it!</button>
-            <button id="btn-miss" class="btn-miss">✗ Not there</button>
-          </div>
-        </div>
-
-        <div id="tap-marker-panel" class="action-panel hidden">
-          <p class="action-label">Visual marker on that tile? <span class="optional">(optional)</span></p>
+        <!-- Combined action panel: marker + hit/miss together, shown immediately -->
+        <div id="tap-action-panel" class="action-panel">
+          <p id="tap-action-label" class="action-label">—</p>
+          <p class="action-sublabel">What marker is on this tile? <span class="optional">(optional — helps narrow grids)</span></p>
           <div class="marker-buttons" id="tap-marker-buttons">
-            <button class="marker-btn" data-marker="plain">🌿<br><small>Skip/Plain</small></button>
+            <button class="marker-btn" data-marker="plain">🌿<br><small>Plain</small></button>
             <button class="marker-btn" data-marker="flower">🌸<br><small>Flower</small></button>
             <button class="marker-btn" data-marker="berry">🫐<br><small>Berry</small></button>
             <button class="marker-btn" data-marker="leaf">🍃<br><small>Leaf</small></button>
+          </div>
+          <div class="divider"></div>
+          <p class="result-prompt">Was Stanley there?</p>
+          <div class="result-buttons">
+            <button id="btn-hit" class="btn-hit">🦔 Found it!</button>
+            <button id="btn-miss" class="btn-miss">✗ Not there</button>
           </div>
         </div>
 
@@ -90,13 +90,19 @@
           <div id="complete-emoji" class="complete-emoji">🦔</div>
           <h2>Week Complete!</h2>
           <div id="final-score" class="final-score">— / 4</div>
-          <div id="final-grid" class="grid-4x4 readonly"></div>
+
+          <!-- Reveal final grid: user marks where ALL Stanleys actually were -->
+          <div class="reveal-section">
+            <p class="reveal-instruction">Vitality shows you where <strong>all</strong> Stanleys were. Tap any positions you missed to complete the record:</p>
+            <div id="reveal-grid" class="grid-4x4"></div>
+            <p class="reveal-hint">🔵 = you found it &nbsp;·&nbsp; tap grey tiles to add/remove missed Stanleys</p>
+          </div>
 
           <div class="complete-actions">
             <a id="btn-submit" class="btn-primary" target="_blank" rel="noopener noreferrer">
-              Submit grid to community
+              Submit complete grid to community
             </a>
-            <p class="submit-note">Opens GitHub — a free account is needed to post</p>
+            <p class="submit-note">Opens GitHub — free account needed to post</p>
             <button id="btn-new-week" class="btn-secondary">Start new week</button>
           </div>
         </div>

@@ -116,13 +116,13 @@ export function clearGitHubCache() {
 }
 
 // Build a pre-filled GitHub new-issue URL so users can submit a grid.
-export function buildSubmissionURL(session) {
-  const { starterPos, taps = [], markers = {}, week } = session;
+// stanleys: explicit array of all confirmed Stanley positions (complete picture).
+// misses:   positions confirmed NOT to be Stanley from user taps.
+export function buildSubmissionURL({ starterPos, stanleys = [], misses = [], markers = {}, week }) {
   if (!starterPos) return null;
 
-  const hits  = taps.filter(t => t.result === 'hit').map(t => t.pos);
-  const misses = taps.filter(t => t.result === 'miss').map(t => t.pos);
-  const stanleys = [starterPos, ...hits];
+  // Ensure starter is included
+  if (!stanleys.includes(starterPos)) stanleys = [starterPos, ...stanleys];
 
   const markerLines = Object.entries(markers)
     .filter(([, v]) => v && v !== 'plain')
@@ -156,7 +156,8 @@ Found: ${stanleys.length}/4 Stanleys
 ---
 *Submitted via [Stanley Finder](https://funkie777.github.io/vitality-stanley-finder/)*`;
 
-  const title = `[GRID] Starter: ${starterPos} | Week: ${week ?? 'unknown'}`;
+  const complete = stanleys.length === 4;
+  const title = `[GRID] Starter: ${starterPos} | ${complete ? '4/4 complete' : `${stanleys.length}/4 partial`} | Week: ${week ?? 'unknown'}`;
 
   return (
     `https://github.com/${REPO}/issues/new` +

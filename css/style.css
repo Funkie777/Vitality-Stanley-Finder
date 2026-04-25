@@ -424,6 +424,52 @@ main { padding: 16px; }
   -webkit-tap-highlight-color: transparent;
 }
 
+/* ===== COMBINED ACTION PANEL ===== */
+.action-sublabel {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.divider {
+  border-top: 1px solid var(--border);
+  margin: 12px 0;
+}
+
+.result-prompt {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+/* ===== REVEAL GRID ===== */
+.reveal-section {
+  margin: 16px 0 8px;
+  text-align: left;
+}
+
+.reveal-instruction {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.reveal-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* Revealed (missed Stanley, added by user in complete phase) */
+.grid-cell.state-revealed {
+  background: #EBF5FB;
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
 /* ===== COMPLETE PHASE ===== */
 .complete-card {
   background: var(--card);
