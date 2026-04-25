@@ -401,10 +401,10 @@ function renderHistory() {
 
 // ── Community tab ──────────────────────────────────────────────────────────
 function renderCommunity(filterStarter = '') {
-  const bySource = { seed: 0, reddit: 0, community: 0 };
+  const bySource = { seed: 0, 'reddit-manual': 0, reddit: 0, community: 0 };
   for (const g of state.grids) bySource[g.source] = (bySource[g.source] ?? 0) + 1;
 
-  $('count-seed').textContent      = bySource.seed      ?? 0;
+  $('count-seed').textContent      = (bySource.seed ?? 0) + (bySource['reddit-manual'] ?? 0);
   $('count-reddit').textContent    = bySource.reddit    ?? 0;
   $('count-community').textContent = bySource.community ?? 0;
   $('count-total').textContent     = state.grids.length;
@@ -474,7 +474,7 @@ function buildMiniGrid(stanleys, starter) {
 
 // ── Data loading ───────────────────────────────────────────────────────────
 async function loadAllData() {
-  $('data-loading-notice').textContent = 'Fetching Reddit & community grids…';
+  setLoadingNotice('Fetching Reddit & community grids…');
 
   try {
     const [redditResult, githubResult] = await Promise.allSettled([
@@ -484,26 +484,51 @@ async function loadAllData() {
 
     const reddit = redditResult.status === 'fulfilled' ? redditResult.value : [];
     const github = githubResult.status === 'fulfilled' ? githubResult.value : [];
+    const redditErr = redditResult.status === 'rejected';
+    const githubErr = githubResult.status === 'rejected';
 
     state.grids = [...SEED_GRIDS, ...reddit, ...github];
 
-    $('data-loading-notice').textContent =
-      `${state.grids.length} grids loaded (${reddit.length} Reddit · ${github.length} community)`;
+    // Build a user-friendly status line
+    const parts = [`${SEED_GRIDS.length} built-in`];
+    if (redditErr)        parts.push('Reddit: unavailable');
+    else if (reddit.length) parts.push(`Reddit: ${reddit.length} grids`);
+    else                  parts.push('Reddit: 0 text grids (data is in images)');
+    if (githubErr)        parts.push('GitHub: unavailable');
+    else                  parts.push(`GitHub Issues: ${github.length} submitted`);
+
+    setLoadingNotice(parts.join(' · '));
 
     if (state.phase === 'playing') { refreshPrediction(); updateStatusBar(); }
     if ($('tab-community').classList.contains('active')) renderCommunity();
 
   } catch (e) {
     console.warn('[App] Data load error:', e);
-    $('data-loading-notice').textContent = 'Using seed data only (network unavailable)';
+    setLoadingNotice(`${SEED_GRIDS.length} built-in grids (network unavailable)`);
   }
 }
 
+// Update both the play-tab notice and the community-tab refresh button status.
+function setLoadingNotice(msg) {
+  const notice = $('data-loading-notice');
+  if (notice) notice.textContent = msg;
+
+  const status = $('refresh-status');
+  if (status) status.textContent = msg;
+}
+
 async function refreshData() {
+  const btn = $('btn-refresh');
+  btn.disabled    = true;
+  btn.textContent = '↻ Refreshing…';
+
   clearRedditCache();
   clearGitHubCache();
-  $('data-loading-notice').textContent = 'Refreshing…';
   await loadAllData();
+  renderCommunity($('starter-filter').value);
+
+  btn.disabled    = false;
+  btn.textContent = '↻ Refresh from Reddit & GitHub';
 }
 
 // ── Shared cell click dispatcher ───────────────────────────────────────────

@@ -606,6 +606,14 @@ main { padding: 16px; }
   -webkit-tap-highlight-color: transparent;
 }
 
+.refresh-status {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  min-height: 14px;
+  line-height: 1.4;
+}
+
 .filter-row {
   display: flex;
   align-items: center;
@@ -649,9 +657,10 @@ main { padding: 16px; }
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-.badge-seed      { background: #BDC3C7; color: white; }
-.badge-reddit    { background: #FF4500; color: white; }
-.badge-community { background: var(--green); color: white; }
+.badge-seed          { background: #BDC3C7; color: white; }
+.badge-reddit        { background: #FF4500; color: white; }
+.badge-reddit-manual { background: #E67E22; color: white; }
+.badge-community     { background: var(--green); color: white; }
 
 .community-starter {
   font-size: 15px;
