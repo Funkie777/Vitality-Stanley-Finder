@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="Predict Stanley positions in the Vitality Weekly Play game using community-sourced grid patterns.">
+  <title>Stanley Finder — Vitality Predictor</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <h1>🦔 Stanley Finder</h1>
+      <span id="week-label" class="week-badge"></span>
+    </div>
+    <nav>
+      <button class="tab active" data-tab="play">Play</button>
+      <button class="tab" data-tab="history">History</button>
+      <button class="tab" data-tab="community">Community</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- PLAY TAB -->
+    <section id="tab-play" class="tab-content active">
+
+      <!-- Phase: Select Starter -->
+      <div id="phase-starter" class="phase">
+        <div class="phase-header">
+          <h2>Where is your free Stanley?</h2>
+          <p class="hint">Tap the tile that was automatically revealed on your board</p>
+        </div>
+        <div id="starter-grid" class="grid-4x4"></div>
+
+        <div id="starter-marker-panel" class="marker-panel hidden">
+          <p class="marker-label">Visual marker on this tile? <span class="optional">(helps narrow predictions)</span></p>
+          <div class="marker-buttons" id="starter-marker-buttons">
+            <button class="marker-btn" data-marker="plain">🌿<br><small>Plain</small></button>
+            <button class="marker-btn" data-marker="flower">🌸<br><small>Flower</small></button>
+            <button class="marker-btn" data-marker="berry">🫐<br><small>Berry</small></button>
+            <button class="marker-btn" data-marker="leaf">🍃<br><small>Leaf</small></button>
+          </div>
+        </div>
+
+        <button id="btn-start-predict" class="btn-primary hidden">Start Predicting →</button>
+        <div id="data-loading-notice" class="notice">Loading community grid data…</div>
+      </div>
+
+      <!-- Phase: Playing -->
+      <div id="phase-predict" class="phase hidden">
+        <div id="prediction-card" class="prediction-card">
+          <div class="pred-label">Best tap</div>
+          <div id="pred-pos" class="pred-pos">—</div>
+          <div id="pred-detail" class="pred-detail">Loading grid data…</div>
+          <div id="pred-alts" class="pred-alts"></div>
+        </div>
+
+        <div id="play-grid" class="grid-4x4"></div>
+
+        <div id="tap-result-panel" class="action-panel hidden">
+          <p id="tap-result-label" class="action-label">Did you find Stanley there?</p>
+          <div class="result-buttons">
+            <button id="btn-hit" class="btn-hit">🦔 Found it!</button>
+            <button id="btn-miss" class="btn-miss">✗ Not there</button>
+          </div>
+        </div>
+
+        <div id="tap-marker-panel" class="action-panel hidden">
+          <p class="action-label">Visual marker on that tile? <span class="optional">(optional)</span></p>
+          <div class="marker-buttons" id="tap-marker-buttons">
+            <button class="marker-btn" data-marker="plain">🌿<br><small>Skip/Plain</small></button>
+            <button class="marker-btn" data-marker="flower">🌸<br><small>Flower</small></button>
+            <button class="marker-btn" data-marker="berry">🫐<br><small>Berry</small></button>
+            <button class="marker-btn" data-marker="leaf">🍃<br><small>Leaf</small></button>
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <span id="stat-taps">3 taps left</span>
+          <span id="stat-found">1 / 4 found</span>
+          <span id="stat-grids">— grids match</span>
+        </div>
+
+        <button id="btn-end-early" class="btn-ghost">End session early</button>
+      </div>
+
+      <!-- Phase: Complete -->
+      <div id="phase-complete" class="phase hidden">
+        <div class="complete-card">
+          <div id="complete-emoji" class="complete-emoji">🦔</div>
+          <h2>Week Complete!</h2>
+          <div id="final-score" class="final-score">— / 4</div>
+          <div id="final-grid" class="grid-4x4 readonly"></div>
+
+          <div class="complete-actions">
+            <a id="btn-submit" class="btn-primary" target="_blank" rel="noopener noreferrer">
+              Submit grid to community
+            </a>
+            <p class="submit-note">Opens GitHub — a free account is needed to post</p>
+            <button id="btn-new-week" class="btn-secondary">Start new week</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- HISTORY TAB -->
+    <section id="tab-history" class="tab-content">
+      <h2 class="tab-title">Your Sessions</h2>
+      <div id="history-list"></div>
+    </section>
+
+    <!-- COMMUNITY TAB -->
+    <section id="tab-community" class="tab-content">
+      <h2 class="tab-title">Community Grid Data</h2>
+
+      <div id="data-status-card" class="data-status-card">
+        <div class="status-row"><span>Seed grids</span><span id="count-seed">—</span></div>
+        <div class="status-row"><span>From Reddit</span><span id="count-reddit">—</span></div>
+        <div class="status-row"><span>Submitted by community</span><span id="count-community">—</span></div>
+        <div class="status-row total"><span>Total</span><span id="count-total">—</span></div>
+        <button id="btn-refresh" class="btn-refresh">↻ Refresh from Reddit &amp; GitHub</button>
+      </div>
+
+      <div id="community-filter" class="filter-row">
+        <label for="starter-filter">Filter by starter:</label>
+        <select id="starter-filter">
+          <option value="">All starters</option>
+        </select>
+      </div>
+
+      <div id="community-list"></div>
+
+      <div class="reddit-links">
+        <p>Grid collections on Reddit:</p>
+        <a href="https://www.reddit.com/r/Vitalityhealth/comments/1nv2kjl/" target="_blank" rel="noopener noreferrer">Collection post #1 (u/lonely_peppercorn)</a>
+        <a href="https://www.reddit.com/r/Vitalityhealth/comments/1qashye/" target="_blank" rel="noopener noreferrer">Collection post #2 (updated)</a>
+        <a href="https://www.reddit.com/r/Vitalityhealth/" target="_blank" rel="noopener noreferrer">r/Vitalityhealth subreddit</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
