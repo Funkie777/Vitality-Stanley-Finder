@@ -1,5 +1,5 @@
 import { SEED_GRIDS }                           from './seed-grids.js';
-import { getBestTap, probTier, ALL_POSITIONS } from './predictor.js';
+import { getBestTap, probTier, ALL_POSITIONS, computeConfirmedMisses } from './predictor.js';
 import { fetchRedditGrids, clearRedditCache }   from './reddit-api.js';
 import { fetchGitHubGrids, clearGitHubCache, buildSubmissionURL } from './github-issues.js';
 
@@ -23,6 +23,7 @@ const state = {
   selectedCell:     null,      // cell shown in action panel
   pendingMarker:    null,      // marker selected but not yet recorded
   revealedPositions: new Set(), // complete-phase: all confirmed Stanley positions
+  confirmedMisses:  {},        // starter → positions confirmed non-Stanley in 2+ sessions
   prediction:       null,
   week:             currentWeek(),
 };
@@ -151,7 +152,7 @@ function enterPlaying() {
 // Recalculate prediction and update the action panel for the recommended cell.
 function refreshPrediction() {
   state.prediction = getBestTap(
-    state.grids, state.starterPos, hits(), misses(), state.markers
+    state.grids, state.starterPos, hits(), misses(), state.markers, state.confirmedMisses
   );
 
   // Auto-select the recommended cell
@@ -433,7 +434,18 @@ function renderCommunity(filterStarter = '') {
     grouped[key].push(g);
   }
 
-  el.innerHTML = Object.entries(grouped)
+  // Show confirmed misses summary if we have any
+  const missEntries = Object.entries(state.confirmedMisses);
+  const missHtml = missEntries.length ? `
+    <div class="confirmed-misses-card">
+      <strong>Community-confirmed non-Stanleys</strong>
+      <p class="miss-note">These positions have never been a Stanley for this starter (2+ sessions). The predictor automatically excludes any seed grids that contradict this.</p>
+      ${missEntries.map(([s, positions]) =>
+        `<div class="miss-row"><span class="miss-starter">${s}</span><span class="miss-positions">${positions.join(', ')} ✗</span></div>`
+      ).join('')}
+    </div>` : '';
+
+  el.innerHTML = missHtml + Object.entries(grouped)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([starter, grids]) => {
       const sample     = grids[0];
@@ -488,6 +500,7 @@ async function loadAllData() {
     const githubErr = githubResult.status === 'rejected';
 
     state.grids = [...SEED_GRIDS, ...reddit, ...github];
+    state.confirmedMisses = computeConfirmedMisses(state.grids);
 
     // Build a user-friendly status line
     const parts = [`${SEED_GRIDS.length} built-in`];

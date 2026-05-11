@@ -15,7 +15,8 @@
 
 const COMMUNITY_GRIDS = [
   // ── R1C1 starters ─────────────────────────────────────────────────────────
-  { id: 'rm-r1c1-a', starter: 'R1C1', stanleys: ['R1C1', 'R2C4', 'R3C2', 'R4C3'], markers: {}, source: 'reddit-manual', confidence: 0.7 },
+  // ⚠ R2C4 and R3C2 both confirmed NOT for R1C1 — confidence lowered
+  { id: 'rm-r1c1-a', starter: 'R1C1', stanleys: ['R1C1', 'R2C4', 'R3C2', 'R4C3'], markers: {}, source: 'reddit-manual', confidence: 0.15 },
 
   // ── R1C3 starters ─────────────────────────────────────────────────────────
   { id: 'rm-r1c3-a', starter: 'R1C3', stanleys: ['R1C3', 'R2C4', 'R3C1', 'R4C2'], markers: {}, source: 'reddit-manual', confidence: 0.7 },
@@ -57,14 +58,50 @@ const COMMUNITY_GRIDS = [
 
 export const SEED_GRIDS = [
   // ── R1C1 starters (top-left) ─────────────────────────────────────────────
-  // User's confirmed partial: R1C1✓ R3C1✓ R1C3✗ R4C3✗
+  //
+  // Community data (6 sessions, W18–W19) has confirmed for R1C1:
+  //   Non-Stanleys (4 sessions each): R3C2, R2C4
+  //   Stanley hits: R2C3 (3 sessions W18), R4C2 (1 session W18), R2C2 (1 session W19)
+  //   Markers: R1C1=flower → R2C3 is Stanley; R1C1=berry → R2C2 is Stanley
+  //
+  // Grids marked confidence:0.15 below conflict with confirmed data and will be
+  // filtered out at runtime by computeConfirmedMisses, but are kept for completeness.
+
+  // ✓ Confirmed variant W18 (3 sessions) — R2C3 is Stanley, R3C2/R2C4 are NOT
+  {
+    id: 'confirmed-r1c1-w18-v1',
+    starter: 'R1C1',
+    stanleys: ['R1C1', 'R2C3', 'R3C1', 'R4C4'],
+    markers: { 'R1C1': 'flower', 'R2C3': 'berry' },
+    source: 'confirmed',
+    confidence: 0.8,
+  },
+  // ✓ Confirmed variant W18 (1 session) — R4C2 is Stanley, R3C2 is NOT
+  {
+    id: 'confirmed-r1c1-w18-v2',
+    starter: 'R1C1',
+    stanleys: ['R1C1', 'R4C2', 'R1C3', 'R3C4'],
+    markers: {},
+    source: 'confirmed',
+    confidence: 0.65,
+  },
+  // ✓ Confirmed variant W19 (1 session) — R2C2 is Stanley, R2C3/R2C4 are NOT
+  {
+    id: 'confirmed-r1c1-w19-v1',
+    starter: 'R1C1',
+    stanleys: ['R1C1', 'R2C2', 'R3C4', 'R4C1'],
+    markers: { 'R1C1': 'berry', 'R2C2': 'berry' },
+    source: 'confirmed',
+    confidence: 0.65,
+  },
+  // ⚠ Conflicts with confirmed data (R2C4 is confirmed NOT a Stanley for R1C1)
   {
     id: 'seed-r1c1-a',
     starter: 'R1C1',
     stanleys: ['R1C1', 'R2C4', 'R3C1', 'R4C2'],
     markers: {},
     source: 'seed',
-    confidence: 0.5,
+    confidence: 0.15,
   },
   {
     id: 'seed-r1c1-b',
@@ -82,21 +119,23 @@ export const SEED_GRIDS = [
     source: 'seed',
     confidence: 0.5,
   },
+  // ⚠ R3C2 is confirmed NOT a Stanley for R1C1
   {
     id: 'seed-r1c1-d',
     starter: 'R1C1',
     stanleys: ['R1C1', 'R2C3', 'R3C2', 'R4C4'],
     markers: {},
     source: 'seed',
-    confidence: 0.5,
+    confidence: 0.15,
   },
+  // ⚠ R2C4 is confirmed NOT a Stanley for R1C1
   {
     id: 'seed-r1c1-e',
     starter: 'R1C1',
     stanleys: ['R1C1', 'R1C3', 'R2C4', 'R4C1'],
     markers: {},
     source: 'seed',
-    confidence: 0.5,
+    confidence: 0.15,
   },
 
   // ── R1C4 starters (top-right) ─────────────────────────────────────────────

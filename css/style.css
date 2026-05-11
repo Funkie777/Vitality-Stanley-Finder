@@ -732,5 +732,48 @@ main { padding: 16px; }
 
 .reddit-links a:hover { text-decoration: underline; }
 
+/* ===== CONFIRMED MISSES CARD ===== */
+.confirmed-misses-card {
+  background: #fff8f0;
+  border: 1px solid #f39c12;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.confirmed-misses-card h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: #c0392b;
+}
+
+.miss-note {
+  font-size: 12px;
+  color: #666;
+  margin: 0 0 10px;
+}
+
+.miss-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 4px 0;
+  border-bottom: 1px solid #f0e0c0;
+  font-size: 13px;
+}
+
+.miss-row:last-child { border-bottom: none; }
+
+.miss-starter {
+  font-weight: 700;
+  color: #333;
+  min-width: 44px;
+}
+
+.miss-positions {
+  color: #c0392b;
+  font-size: 12px;
+}
+
 /* ===== UTILITIES ===== */
 .hidden { display: none !important; }
